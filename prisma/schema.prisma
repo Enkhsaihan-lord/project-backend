@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  ADMIN
+  SUPERADMIN
+  USER
+}
+
+enum Subscription {
+  PREMIUM
+  NORMAL
+}
+
+model Series {
+  id           String       @id @default(cuid())
+  name         String
+  description  String
+  seriesNumber String
+  image        String
+  videoUrl     String?
+  subscription Subscription @default(PREMIUM)
+  episodes     SeriesInfo[]
+}
+
+model SeriesInfo {
+  id            String       @id @default(cuid())
+  episodeNumber String       @default("")
+  image         String       @default("")
+  videoUrl      String?
+  subscription  Subscription @default(PREMIUM)
+  seriesId      String?
+  series        Series?      @relation(fields: [seriesId], references: [id])
+}
+
+model Movie {
+  id           String       @id @default(cuid())
+  name         String
+  description  String
+  image        String
+  videoUrl     String?
+  releaseDate  String?
+  movieNumber  String?
+  subscription Subscription @default(PREMIUM)
+
+  @@map("MovieInfo")
+}
+
+model User {
+  id                    Int          @id @default(autoincrement())
+  email                 String       @unique
+  name                  String       @unique
+  password              String
+  role                  Role         @default(USER)
+  subscription          Subscription @default(NORMAL)
+  verificationCode      String?
+  codeExpiresAt         DateTime?
+  subscriptionExpiresAt DateTime?
+}
+
+model Admin {
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  name         String       @unique
+  password     String
+  role         Role         @default(ADMIN)
+  subscription Subscription @default(PREMIUM)
+}
+
+model SuperAdmin {
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  name         String       @unique
+  password     String
+  role         Role         @default(SUPERADMIN)
+  subscription Subscription @default(PREMIUM)
+}
+
+model SubPayment {
+  id        Int      @id @default(autoincrement())
+  email     String
+  duration  String
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+}
