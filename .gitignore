@@ -165,3 +165,8 @@ dist
 .env*
 !.env.example
 .wrangler/
+
+/src/generated/prisma
+dev.db
+*.db
+package-lock.json
