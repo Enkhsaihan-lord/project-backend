@@ -1,8 +1,11 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "movie-site",
+	"name": "project-backend",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-08-05",
+	"build": {
+		"command": "npx prisma generate"
+	},
 	"d1_databases": [
 		{
 			"binding": "DB",
